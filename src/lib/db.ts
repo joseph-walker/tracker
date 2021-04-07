@@ -2,14 +2,15 @@ import Dexie from 'dexie';
 
 import type { Emotion } from './emotions';
 
-export interface Event {
+export interface EmotionEvent {
     id?: number;
     emotions: Emotion[];
     date: Date;
+    note?: string;
 }
 
 class Database extends Dexie {
-    events: Dexie.Table<Event, Required<Event>["id"]>;
+    events: Dexie.Table<EmotionEvent, Required<EmotionEvent>["id"]>;
 
     constructor() {
         super("EmotionTracker");
@@ -29,6 +30,7 @@ db.open().catch(function (reason) {
 db.on("populate", function () {
     db.events.add({
         emotions: ["aggravated", "puzzled"],
+        note: "This is the placeholder entry. Lorem ipsum dolor sit amet.",
         date: new Date()
     });
 });

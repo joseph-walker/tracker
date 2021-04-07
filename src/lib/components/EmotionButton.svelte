@@ -50,7 +50,7 @@
         width: 100%;
         height: 100%;
         border-radius: var(--roundy-bit-softness);
-        border: 1px solid #e8ecf3;
+        border: 1px solid var(--middle-gray);
         transition: clip-path 0.6s cubic-bezier(0.76, 0, 0.24, 1);
     }
 

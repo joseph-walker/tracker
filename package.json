@@ -20,6 +20,7 @@
 		"node": ">= 12.17.0"
 	},
 	"dependencies": {
+		"date-fns": "^2.19.0",
 		"dexie": "^3.0.3"
 	}
 }

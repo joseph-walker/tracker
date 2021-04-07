@@ -1,85 +1,65 @@
 <script lang="ts">
+    import formatDistanceToNow from "date-fns/formatDistanceToNow";
+
+    import type { EmotionEvent } from "$lib/db";
     import type { Emotion, EmotionLevel, EmotionGroup } from "$lib/emotions";
-    import { reconstructEmotionMap } from "$lib/emotions";
+    import { emotionToColor, reconstructEmotionMap } from "$lib/emotions";
+    import GlanceBar from "./GlanceBar.svelte";
 
-    export let emotions: Emotion[];
+    export let event: EmotionEvent;
 
-    function emotionToColor(group: EmotionGroup): string {
-        const emotionToColorMap: Record<EmotionGroup, string> = {
-            "anger": "var(--red)",
-            "distress": "var(--yellow)",
-            "fear": "var(--orange)",
-            "happiness": "var(--green)",
-            "love": "var(--purple)",
-            "sadness": "var(--blue)"
-        }
+    const {
+        date,
+        emotions,
+        note
+    } = event;
 
-        return emotionToColorMap[group];
-    }
+    let expanded: boolean = false;
 
     const cardData = reconstructEmotionMap(emotions);
     const cardEntries = Object.entries(cardData) as [EmotionGroup, Record<EmotionLevel, Emotion[]>][];
 
-    const gradientData = cardEntries.map(function ([emotionGroup, levels]) {
-        const colorData = Object.entries(levels) as [EmotionLevel, Emotion[]][];
-        const groupScore = colorData.reduce(function (sum, [level, emotions]) {
-            let multiplier;
-
-            switch (level) {
-                case "high": multiplier = 3; break;
-                case "medium": multiplier = 2; break;
-                case "low": multiplier = 1; break;
-            }
-
-            return sum + emotions.length * multiplier;
-        }, 0);
-
-        return [emotionToColor(emotionGroup), groupScore] as const;
-    });
-
-    const gradientSum = gradientData.reduce(function (sum, [_, colorSum]) {
-        return sum + colorSum;
-    }, 0);
-
-    const gradient = gradientData.reduce(function ([idx, partialGradient], [color, colorSum]) {
-        const start = idx;
-        const stop = idx + (colorSum / gradientSum * 100);
-
-        return [stop, `${partialGradient}, ${color} ${Math.round(start)}%, ${color} ${Math.round(stop)}%`] as [number, string];
-    }, [0, "linear-gradient(90deg"] as [number, string])[1];
+    function toggleExpanded() {
+        expanded = !expanded;
+    }
 </script>
 
-<div class="emotion-card">
+<div class="emotion-card" class:expanded on:click={toggleExpanded}>
     <div class="header">
-        <div class="glance-bar" style={`background: ${gradient}`}></div>
-        <h3 class="timestamp">About 2 Hours Ago</h3>
+        <GlanceBar emotions={emotions}></GlanceBar>
+        <h3 class="timestamp">{formatDistanceToNow(date)} Ago</h3>
     </div>
-    <dl>
-        {#each cardEntries as emotionGroups}
-            <div class="group-wrapper">
-                <dt class="emotion-group">
-                    <span style={`background: ${emotionToColor(emotionGroups[0])}`} class="bullet filled"></span>{emotionGroups[0]}
-                </dt>
-                <dd class="breakdown">
-                    <ul class="levels">
-                        {#each Object.entries(emotionGroups[1]) as emotionLevels}
-                            <li>
-                                <span style={`border-color: ${emotionToColor(emotionGroups[0])}`} class={`bullet ${emotionLevels[0]}`}></span>
-                                <span class="level">{emotionLevels[0]} Level</span>
-                                <span class="count">× {emotionLevels[1].length}</span>
-                                <span class="hack"></span>
-                                <ul class="emotions">
-                                    {#each emotionLevels[1] as emotion}
-                                        <li>{emotion}</li>
-                                    {/each}
-                                </ul>
-                            </li>
-                        {/each}
-                    </ul>
-                </dd>
-            </div>
-        {/each}
-    </dl>
+    {#if expanded}
+        <dl>
+            {#each cardEntries as emotionGroups}
+                <div class="group-wrapper">
+                    <dt class="emotion-group">
+                        <span style={`background: ${emotionToColor(emotionGroups[0])}`} class="bullet filled"></span>{emotionGroups[0]}
+                    </dt>
+                    <dd class="breakdown">
+                        <ul class="levels">
+                            {#each Object.entries(emotionGroups[1]) as emotionLevels}
+                                <li>
+                                    <span style={`border-color: ${emotionToColor(emotionGroups[0])}`} class={`bullet ${emotionLevels[0]}`}></span>
+                                    <span class="level">{emotionLevels[0]} Level</span>
+                                    <span class="count">× {emotionLevels[1].length}</span>
+                                    <span class="hack"></span>
+                                    <ul class="emotions">
+                                        {#each emotionLevels[1] as emotion}
+                                            <li>{emotion}</li>
+                                        {/each}
+                                    </ul>
+                                </li>
+                            {/each}
+                        </ul>
+                    </dd>
+                </div>
+            {/each}
+        </dl>
+        {#if note}
+            <p class="note">{note}</p>
+        {/if}
+    {/if}
 </div>
 
 <style>
@@ -108,12 +88,10 @@
         border-bottom: 1px dashed var(--middle-gray);
     }
 
-    .glance-bar {
-        height: 0.75rem;
-        border-radius: 4px;
-        flex: 1;
-        margin-right: 32px;
-        max-width: 64px;
+    .emotion-card:not(.expanded) .header {
+        margin-bottom: 0;
+        border-bottom: none;
+        padding-bottom: 0;
     }
 
     .timestamp {
@@ -121,6 +99,7 @@
         text-align: right;
         margin-left: auto;
         color: var(--dark-gray);
+        text-transform: capitalize;
     }
 
     .emotion-group {
@@ -232,6 +211,12 @@
         margin-left: calc(var(--base-gutter) / 2);
         margin-top: calc(var(--base-gutter) / 2);
         text-transform: capitalize;
+    }
+
+    .note {
+        margin-top: calc(var(--base-gutter) / 2);
+        font-style: italic;
+        color: var(--dark-gray);
     }
 
     .group-wrapper {

@@ -12,7 +12,7 @@
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        flex-basis: 100vw;
+        width: 100vw;
         flex-grow: 0;
         flex-shrink: 0;
         color: #333;

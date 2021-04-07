@@ -112,7 +112,7 @@
         on:touchend|preventDefault|stopPropagation={handleEnd}
         on:touchcancel|preventDefault|stopPropagation={handleEnd}
         class="container"
-        style="transform: translateX({$containerOffset}px); width: {sectionCount * 100}vw;"
+        style="transform: translateX({$containerOffset}px); width: {sectionCount * 100}%;"
     >
         <slot name="panels"></slot>
     </div>
@@ -123,7 +123,6 @@
 
     <slot name="additional-content"></slot>
 </section>
-
 
 <style>
     .picker-viewport {

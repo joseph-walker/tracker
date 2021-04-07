@@ -202,3 +202,16 @@ export function reconstructEmotionMap(emotions: Emotion[]): Record<EmotionGroup,
         };
     }, {} as Record<EmotionGroup, Record<EmotionLevel, Emotion[]>>);
 }
+
+export function emotionToColor(group: EmotionGroup): string {
+	const emotionToColorMap: Record<EmotionGroup, string> = {
+		"anger": "var(--red)",
+		"distress": "var(--yellow)",
+		"fear": "var(--orange)",
+		"happiness": "var(--green)",
+		"love": "var(--purple)",
+		"sadness": "var(--blue)"
+	}
+
+	return emotionToColorMap[group];
+}

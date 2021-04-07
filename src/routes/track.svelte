@@ -1,5 +1,6 @@
 <script lang="ts">
     import { spring } from 'svelte/motion';
+    import { goto } from '$app/navigation';
 
     import type { Emotion } from "$lib/emotions";
     import { db } from '$lib/db';
@@ -13,11 +14,11 @@
     let selectedEmotions: Set<Emotion> = new Set();
 
     const containerOffset = spring(0, {
-        stiffness: 0.12,
-        damping: 0.9
+        stiffness: 0.05,
+        damping: 0.5
     });
 
-    $: $containerOffset = currentStep * -100;
+    $: $containerOffset = currentStep * -50;
 
     // TODO: Maybe invert this, let this component control button toggle state? Is that "Svelte"-ier?
     const handleToggleEmotion = (emotion: Emotion) => (toggleEvent: CustomEvent<boolean>) => {
@@ -30,13 +31,19 @@
         selectedEmotions = selectedEmotions;
     }
 
-    function completeStep0() {
-        currentStep = 1;
+    function trackEmotion() {
+        db.events.add({
+            emotions: [...selectedEmotions],
+            date: new Date(),
+            note: "This is a test note"
+        });
+
+        goto("/");
     }
 </script>
 
-<main class="wizard-viewport" style={`transform: translateY(${$containerOffset}vh)`}>
-    <section class="step" class:active={currentStep === 0}>
+<main class="wizard-viewport" style={`transform: translateY(${$containerOffset}%)`}>
+    <section class="step step-1" class:active={currentStep === 0}>
         <PanelSlider sectionCount={emotionGroups.length}>
             <svelte:fragment slot="panels">
                 {#each emotionGroups as emotionGroup}
@@ -50,18 +57,28 @@
                 {/each}
             </svelte:fragment>
 
-            <button slot="additional-content" class="confirm-button" on:click={completeStep0}>Track {selectedEmotions.size} Emotions</button>
+            <button slot="additional-content" class="confirm-button" on:click={_ => currentStep = 1}>Track {selectedEmotions.size} Emotions</button>
         </PanelSlider>
     </section>
 
-    <section class="step" class:active={currentStep === 1}>
-        <h1>Ohhai</h1>
+    <section class="step step-2" class:active={currentStep === 1}>
+        <Panel title="Include a Note?">
+            <svelte:fragment>
+                <textarea class="notes" placeholder="Today I felt..."></textarea>
+                <div class="buttons">
+                    <button class="confirm-button" on:click={trackEmotion}>Confirm {selectedEmotions.size} Emotions</button>
+                    <button class="back-button" on:click={_ => currentStep = 0}>Back</button>
+                </div>
+            </svelte:fragment>
+        </Panel>
     </section>
 </main>
 
 <style>
     .wizard-viewport {
         width: 100%;
+        /* This is hard coded! 100% * numSections - This is a hack */
+        height: 200%;
         position: relative;
         overflow: hidden;
         display: flex;
@@ -70,7 +87,7 @@
 
     .step {
         width: 100%;
-        height: 100vh;
+        height: 100%;
     }
 
     .confirm-button {
@@ -78,9 +95,35 @@
         background: var(--cta);
         color: #FFF;
         padding: 16px;
-        margin: var(--base-gutter);
         text-align: center;
         border-radius: var(--roundy-bit-softness);
+    }
+
+    .back-button {
+        font-size: 1.2rem;
+        background: var(--middle-gray);
+        color: var(--dark-gray);
+        padding: 16px;
+        text-align: center;
+        border-radius: var(--roundy-bit-softness);
+    }
+
+    .step-1 .confirm-button {
+        margin: var(--base-gutter);
+    }
+
+    .step-2 .confirm-button {
+        flex: 1;
+    }
+
+    .buttons {
+        width: 100%;
+        display: flex;
+        margin: auto 0 0 0;
+    }
+
+    .buttons .back-button {
+        margin-left: var(--base-gutter)
     }
 
     .panel-buttons {
@@ -90,5 +133,15 @@
         grid-template-columns: 1fr 1fr;
         grid-row-gap: var(--base-gutter);
         grid-column-gap: var(--base-gutter);
+    }
+
+    .notes {
+        padding: var(--base-gutter);
+        background: var(--white);
+        width: 100%;
+        max-height: 200px;
+        flex-grow: 1;
+        border-radius: var(--roundy-bit-softness);
+        border: 1px solid var(--middle-gray);
     }
 </style>
