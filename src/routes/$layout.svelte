@@ -51,5 +51,6 @@
     :global(body) {
         font-family: 'Lexend', sans-serif;
         background: var(--background);
+        overflow: hidden;
     }
 </style>

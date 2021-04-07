@@ -19,10 +19,6 @@ module.exports = {
 		vite: {
 			ssr: {
 				noExternal: Object.keys(pkg.dependencies || {})
-			},
-			server: {
-				port: 9001,
-				host: "192.168.1.11"
 			}
 		}
 	}
