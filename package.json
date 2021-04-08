@@ -8,8 +8,7 @@
 	},
 	"devDependencies": {
 		"@architect/sandbox": "^3.4.1",
-		"@sveltejs/adapter-begin": "*",
-		"@sveltejs/adapter-netlify": "*",
+		"@sveltejs/adapter-begin": "next",
 		"@sveltejs/adapter-node": "next",
 		"@sveltejs/kit": "next",
 		"svelte": "^3.29.0",
