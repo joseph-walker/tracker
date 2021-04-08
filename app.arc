@@ -1,5 +1,5 @@
 @app
-svelte-kit-app
+Feelings-Tracker
 
 @http
 get /
