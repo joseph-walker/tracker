@@ -7,6 +7,7 @@
 		"start": "svelte-kit start"
 	},
 	"devDependencies": {
+		"@architect/sandbox": "^3.4.1",
 		"@sveltejs/adapter-begin": "*",
 		"@sveltejs/adapter-netlify": "*",
 		"@sveltejs/adapter-node": "next",
