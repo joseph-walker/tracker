@@ -5,8 +5,11 @@
     import type { Emotion, EmotionLevel, EmotionGroup } from "$lib/emotions";
     import { emotionToColor, reconstructEmotionMap } from "$lib/emotions";
     import Chevron from '$lib/components/icons/Chevron.svelte';
-    import GlanceBar from "./GlanceBar.svelte";
 
+    import GlanceBar from "./GlanceBar.svelte";
+    import Trash from "./icons/Trash.svelte";
+
+    export let onDelete: () => void;
     export let event: EmotionEvent;
 
     const {
@@ -15,6 +18,8 @@
         note
     } = event;
 
+    let deleteTimer: NodeJS.Timeout;
+    let showDeleteWarning: boolean = false;
     let expanded: boolean = false;
 
     const cardData = reconstructEmotionMap(emotions);
@@ -23,10 +28,34 @@
     function toggleExpanded() {
         expanded = !expanded;
     }
+
+    function startDeleteTimer() {
+        deleteTimer = setTimeout(function () {
+            showDeleteWarning = true;
+
+            deleteTimer = setTimeout(function () {
+                if (confirm("Are you sure you want to delete this entry?")) {
+                    onDelete();
+                }
+
+                showDeleteWarning = false;
+            }, 500);
+        }, 500);
+    }
+
+    function resetDeleteTime() {
+        if (deleteTimer) {
+            showDeleteWarning = false;
+            clearTimeout(deleteTimer);
+        }
+    }
 </script>
 
-<div class="emotion-card" class:expanded on:click={toggleExpanded}>
-    <div class="header">
+<div class="emotion-card" class:expanded on:touchstart={startDeleteTimer} on:touchend={resetDeleteTime}>
+    <div class="delete-warning" class:visible={showDeleteWarning}>
+        <i><Trash></Trash></i>
+    </div>
+    <div class="header" on:click={toggleExpanded}>
         <GlanceBar emotions={emotions}></GlanceBar>
         <h3 class="timestamp">{formatDistanceToNow(date)} Ago</h3>
         <i class="chevron"><Chevron></Chevron></i>
@@ -76,10 +105,39 @@
         background: var(--card-background);
         box-shadow: var(--soft-shadow);
         border: 1px solid var(--middle-gray);
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
 
         /** Must be odd */
         --bullet-size: 11px;
         --list-gutter: 4px;
+    }
+
+    .delete-warning {
+        opacity: 0;
+        pointer-events: none;
+        display: flex;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgb(214 48 49 / 50%);
+        z-index: 5;
+        justify-content: center;
+        align-items: center;
+        transition: 0.25s opacity ease-in;
+    }
+
+    .delete-warning.visible {
+        opacity: 1;
+    }
+
+    .delete-warning i {
+        width: 32px;
+        height: 32px;
+        fill: var(--red);
     }
 
     .header {
@@ -234,6 +292,7 @@
         margin-top: calc(var(--base-gutter) / 2);
         font-style: italic;
         color: var(--dark-gray);
+        line-height: 1.4;
     }
 
     .group-wrapper {

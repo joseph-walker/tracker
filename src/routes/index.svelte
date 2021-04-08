@@ -5,19 +5,26 @@
     import EmotionCard from "$lib/components/EmotionCard.svelte";
     import Plus from '$lib/components/icons/Plus.svelte';
 
-    function latestEntries() {
+    let latestEntries = getLatestEntries();
+
+    function getLatestEntries() {
         return db.events.orderBy("date").reverse().toArray();
     }
 
     function newEvent() {
         goto("/track");
     }
+
+    async function deleteEntry(entryId: number) {
+        await db.events.delete(entryId);
+        latestEntries = getLatestEntries();
+    }
 </script>
 
 <div class="scrollable">
-    {#await latestEntries() then entries}
+    {#await latestEntries then entries}
         {#each entries as entry}
-            <EmotionCard event={entry}></EmotionCard>
+            <EmotionCard onDelete={() => deleteEntry(entry.id)} event={entry}></EmotionCard>
         {/each}
     {/await}
 

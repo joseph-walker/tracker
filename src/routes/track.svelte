@@ -10,6 +10,7 @@
     import PanelSlider from '$lib/components/PanelSlider.svelte';
     import Panel from '$lib/components/Panel.svelte';
 
+    let note: string = "";
     let currentStep: number = 0;
     let selectedEmotions: Set<Emotion> = new Set();
 
@@ -52,7 +53,7 @@
         db.events.add({
             emotions: [...selectedEmotions],
             date: new Date(),
-            note: "This is a test note"
+            note
         });
 
         goto("/");
@@ -81,7 +82,7 @@
     <section class="step step-2" class:active={currentStep === 1}>
         <Panel title="Include a Note?">
             <svelte:fragment>
-                <textarea class="notes" placeholder={notePlaceholder}></textarea>
+                <textarea class="notes" bind:value={note} placeholder={notePlaceholder}></textarea>
                 <div class="buttons">
                     <button class="confirm-button" on:click={trackEmotion}>Confirm {selectedEmotions.size} Emotions</button>
                     <button class="back-button" on:click={_ => currentStep = 0}>Back</button>

@@ -29,8 +29,8 @@ db.open().catch(function (reason) {
 
 db.on("populate", function () {
     db.events.add({
-        emotions: ["aggravated", "puzzled"],
-        note: "This is the placeholder entry. Lorem ipsum dolor sit amet.",
+        emotions: ["excited", "glad"],
+        note: "Today I was excited and glad because I decided to start tracking my feelings. :)",
         date: new Date()
     });
 });
