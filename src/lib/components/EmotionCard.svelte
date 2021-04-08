@@ -1,5 +1,5 @@
 <script lang="ts">
-    import formatDistanceToNow from "date-fns/formatDistanceToNow";
+    import formatDistanceToNow from "date-fns/formatDistanceToNow/index.js";
 
     import type { EmotionEvent } from "$lib/db";
     import type { Emotion, EmotionLevel, EmotionGroup } from "$lib/emotions";

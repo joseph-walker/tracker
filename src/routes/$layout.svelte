@@ -6,8 +6,6 @@
 <slot></slot>
 
 <style>
-	@namespace svg "http://www.w3.org/2000/svg";
-
     :root {
         --white: #FFF;
         --rich-black: #333;
@@ -32,12 +30,6 @@
         --cta: var(--green);
         --soft-shadow: 0px 3px 5px rgb(152 152 152 / 12%);
         --heavy-shadow: 0px 3px 5px rgb(152 152 152 / 36%);
-    }
-
-    :global(:not(svg|*)) {
-        all: unset;
-        display: revert;
-        box-sizing: border-box;
     }
 
     :global(html, body, #svelte, .app-container) {

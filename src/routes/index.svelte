@@ -1,11 +1,17 @@
 <script lang="ts">
+    import { onMount } from 'svelte';
     import { goto } from '$app/navigation';
 
+    import type { EmotionEvent } from "$lib/db";
     import { db } from '$lib/db';
     import EmotionCard from "$lib/components/EmotionCard.svelte";
     import Plus from '$lib/components/icons/Plus.svelte';
 
-    let latestEntries = getLatestEntries();
+    let latestEntries: Promise<EmotionEvent[]> = Promise.resolve([]);
+
+    onMount(() => {
+        latestEntries = getLatestEntries();
+    });
 
     function getLatestEntries() {
         return db.events.orderBy("date").reverse().toArray();
