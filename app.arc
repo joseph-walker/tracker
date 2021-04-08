@@ -1,5 +1,5 @@
 @app
-Feelings-Tracker
+feelings-tracker
 
 @http
 get /
