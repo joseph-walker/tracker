@@ -4,6 +4,7 @@
     import type { EmotionEvent } from "$lib/db";
     import type { Emotion, EmotionLevel, EmotionGroup } from "$lib/emotions";
     import { emotionToColor, reconstructEmotionMap } from "$lib/emotions";
+    import Chevron from '$lib/components/icons/Chevron.svelte';
     import GlanceBar from "./GlanceBar.svelte";
 
     export let event: EmotionEvent;
@@ -28,6 +29,7 @@
     <div class="header">
         <GlanceBar emotions={emotions}></GlanceBar>
         <h3 class="timestamp">{formatDistanceToNow(date)} Ago</h3>
+        <i class="chevron"><Chevron></Chevron></i>
     </div>
     {#if expanded}
         <dl>
@@ -88,11 +90,26 @@
         border-bottom: 1px dashed var(--middle-gray);
     }
 
+    .chevron {
+        display: block;
+        width: 8px;
+        height: 8px;
+        margin-left: 4px;
+        fill: var(--dark-gray);
+        position: relative;
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .emotion-card.expanded .chevron {
+        transform: rotate(90deg);
+    }
+
     .emotion-card:not(.expanded) .header {
         margin-bottom: 0;
         border-bottom: none;
         padding-bottom: 0;
     }
+
 
     .timestamp {
         font-weight: 600;

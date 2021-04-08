@@ -20,6 +20,23 @@
 
     $: $containerOffset = currentStep * -50;
 
+    let notePlaceholder;
+    $: {
+        const emotionArray = [...selectedEmotions];
+
+        switch (emotionArray.length) {
+            case 0: notePlaceholder = "Today I felt..."; break;
+            case 1: notePlaceholder = `Today I felt ${emotionArray[0]} beacause...`; break;
+            case 2: notePlaceholder = `Today I felt ${emotionArray[0]} and ${emotionArray[1]} because...`; break;
+            default: {
+                const init = emotionArray.slice(0, -1);
+                const last = emotionArray.slice(-1)[0];
+
+                notePlaceholder = `Today I felt ${init.join(", ")}, and ${last} because...`;
+            }
+        }
+    }
+
     // TODO: Maybe invert this, let this component control button toggle state? Is that "Svelte"-ier?
     const handleToggleEmotion = (emotion: Emotion) => (toggleEvent: CustomEvent<boolean>) => {
         if (toggleEvent.detail === true) {
@@ -64,7 +81,7 @@
     <section class="step step-2" class:active={currentStep === 1}>
         <Panel title="Include a Note?">
             <svelte:fragment>
-                <textarea class="notes" placeholder="Today I felt..."></textarea>
+                <textarea class="notes" placeholder={notePlaceholder}></textarea>
                 <div class="buttons">
                     <button class="confirm-button" on:click={trackEmotion}>Confirm {selectedEmotions.size} Emotions</button>
                     <button class="back-button" on:click={_ => currentStep = 0}>Back</button>

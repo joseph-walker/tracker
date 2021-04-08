@@ -31,6 +31,7 @@
         --primary: var(--blue);
         --cta: var(--green);
         --soft-shadow: 0px 3px 5px rgb(152 152 152 / 12%);
+        --heavy-shadow: 0px 3px 5px rgb(152 152 152 / 36%);
     }
 
     :global(:not(svg|*)) {
