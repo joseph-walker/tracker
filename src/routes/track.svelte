@@ -96,6 +96,7 @@
     .wizard-viewport {
         width: 100%;
         /* This is hard coded! 100% * numSections - This is a hack */
+        /* This container cannot have margins or paddings */
         height: 200%;
         position: relative;
         overflow: hidden;

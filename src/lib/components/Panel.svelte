@@ -8,6 +8,11 @@
 </section>
 
 <style>
+    :global(.picker-viewport .panel) {
+        /* TODO: Restructure this so it's not horrible */
+        padding-bottom: var(--base-gutter) !important;
+    }
+
     .panel {
         display: flex;
         flex-direction: column;
@@ -18,6 +23,7 @@
         color: #333;
         min-height: 100%;
         padding: var(--base-gutter);
+        padding-bottom: calc(var(--navbar-height) + var(--base-gutter));
     }
 
     .panel-header {

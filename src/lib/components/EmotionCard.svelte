@@ -12,6 +12,8 @@
     export let onDelete: () => void;
     export let event: EmotionEvent;
 
+    const NOTE_TIME_UPDATE_INTERVAL = 60000;
+
     const {
         date,
         emotions,
@@ -21,6 +23,12 @@
     let deleteTimer: NodeJS.Timeout;
     let showDeleteWarning: boolean = false;
     let expanded: boolean = false;
+    let noteTimeDelta = formatDistanceToNow(date);
+
+    // Update the time delta every n seconds
+    setInterval(function () {
+        noteTimeDelta = formatDistanceToNow(date);
+    }, NOTE_TIME_UPDATE_INTERVAL);
 
     const cardData = reconstructEmotionMap(emotions);
     const cardEntries = Object.entries(cardData) as [EmotionGroup, Record<EmotionLevel, Emotion[]>][];
@@ -29,6 +37,7 @@
         expanded = !expanded;
     }
 
+    // TODO: Come up with a better delete mechanism than long-hold
     function startDeleteTimer() {
         deleteTimer = setTimeout(function () {
             showDeleteWarning = true;
@@ -57,7 +66,7 @@
     </div>
     <div class="header" on:click={toggleExpanded}>
         <GlanceBar emotions={emotions}></GlanceBar>
-        <h3 class="timestamp">{formatDistanceToNow(date)} Ago</h3>
+        <h3 class="timestamp">{noteTimeDelta} Ago</h3>
         <i class="chevron"><Chevron></Chevron></i>
     </div>
     {#if expanded}
