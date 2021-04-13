@@ -25,13 +25,4 @@
         padding: var(--base-gutter);
         padding-bottom: calc(var(--navbar-height) + var(--base-gutter));
     }
-
-    .panel-header {
-        display: block;
-        margin-bottom: var(--base-gutter);
-        font-size: 1.5rem;
-        font-weight: 600;
-        text-transform: capitalize;
-        text-align: left;
-    }
 </style>

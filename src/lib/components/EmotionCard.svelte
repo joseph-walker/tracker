@@ -108,7 +108,7 @@
     }
 
     .emotion-card {
-        margin: var(--base-gutter);
+        margin-bottom: var(--base-gutter);
         padding: var(--base-gutter);
         border-radius: var(--roundy-bit-softness);
         background: var(--card-background);

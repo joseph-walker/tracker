@@ -66,6 +66,15 @@
         overflow: hidden;
     }
 
+    :global(h1) {
+        display: block;
+        margin-bottom: var(--base-gutter);
+        font-size: 1.5rem;
+        font-weight: 600;
+        text-transform: capitalize;
+        text-align: left;
+    }
+
     .navbar {
         height: 64px;
         display: grid;

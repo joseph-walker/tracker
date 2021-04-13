@@ -152,7 +152,7 @@ export const emotions = {
 			"unsure",
 			"touchy",
 			"lost",
-			"disturbed"
+			"upset"
 		]
 	}
 } as const;
@@ -160,6 +160,15 @@ export const emotions = {
 export type Emotion = (typeof emotions)[keyof typeof emotions][EmotionLevel][number];
 export type EmotionGroup = keyof typeof emotions;
 export type EmotionLevel = "high" | "medium" | "low";
+
+export const emotionToColorMap: Record<EmotionGroup, string> = {
+	"anger": "var(--red)",
+	"distress": "var(--yellow)",
+	"fear": "var(--orange)",
+	"happiness": "var(--green)",
+	"love": "var(--purple)",
+	"sadness": "var(--blue)"
+}
 
 type InverseLookupMap =
 	Record<
@@ -204,14 +213,5 @@ export function reconstructEmotionMap(emotions: Emotion[]): Record<EmotionGroup,
 }
 
 export function emotionToColor(group: EmotionGroup): string {
-	const emotionToColorMap: Record<EmotionGroup, string> = {
-		"anger": "var(--red)",
-		"distress": "var(--yellow)",
-		"fear": "var(--orange)",
-		"happiness": "var(--green)",
-		"love": "var(--purple)",
-		"sadness": "var(--blue)"
-	}
-
 	return emotionToColorMap[group];
 }
